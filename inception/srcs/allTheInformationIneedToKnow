@@ -1,0 +1,42 @@
++ docker-compose up -d --build nginx
+
+=> up: Tells Docker to start the container.
+=> 
+=> -d: Stands for "detached." It runs the container in the background so you can keep using your terminal.
+=> 
+=> --build: Forces Docker to read your Dockerfile and build the image fresh.
+=> 
+=> nginx: Tells it to ignore everything else in the blueprint and only spin up this specific service.
+
++ docker ps
+
+=> You should see nginx listed in the output with a status of Up, and it should show 0.0.0.0:443->443/tcp.
+
++ curl -k https://127.0.0.1
+
+=> https://: Forces the secure TLS connection you configureda.
+=> -k: Tells curl to intentionally ignore the fact that the certificate is self-signed and just make the connection anyway.
+
++ Dockerfile of mariadb
+
+=>FROM debian:bullseye
+This is the foundation. It tells Docker to download a minimal, stripped-down version of the Debian 11 (Bullseye) Linux operating system. Everything else you do in this file is built on top of this OS.
+=>RUN apt-get update && apt-get install -y mariadb-server
+This executes two commands inside the container during the build. First, it updates the list of available software. Second, it installs the MariaDB engine.
+=>Note on -y: This stands for "yes." When you install software manually, Linux usually pauses to ask, "This will take 50MB of space, do you want to continue? (Y/n)". Because Docker builds are completely automated and have no human to type "Y", this flag forces the installation to proceed without pausing. If it pauses, the build crashes.
+=>COPY 50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+This takes the custom network rulebook we just finished writing (where we set bind-address = 0.0.0.0) from your host machine and physically drops it into the container, perfectly overwriting the default, restrictive configuration file that MariaDB created when it was installed.
+=>COPY setup.sh /setup.sh
+=>This grabs a script named setup.sh (which we still need to write) from your srcs/mariadb folder and copies it directly into the very top-level root folder (/) of the container's file system.
+=>RUN chmod +x /setup.sh
+By default, when you copy a text file into Linux, the OS assumes it is just a document to be read. The chmod +x command changes the file permissions to make it executable. It tells the container: "This is not just text; this is a program, and you are allowed to run it."
+=>EXPOSE 3306
+This is purely documentation. It does not actually open the port (your 50-server.cnf file does that). It simply acts as a label on the container so that you, Docker, and other developers know that this container expects to send and receive traffic on TCP port 3306.
+=>CMD ["/setup.sh"]
+This is the engine starter. While RUN commands happen during the build phase (when the container image is being =? assembled), the CMD command only executes when the container actually boots up to run. Instead of just turning on a blank database, this tells the container to run your custom script first.
+
+ + docker-compose up -d --build
+
+--build: Tells Docker to read your Dockerfiles and compile fresh images from scratch.
+
+-d (Detached mode): Tells Docker to run the containers in the background so you can continue using your terminal.

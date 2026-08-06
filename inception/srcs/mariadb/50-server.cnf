@@ -1,0 +1,57 @@
+[server]
+
+[mysqld]
+user                    = mysql
+pid-file                = /run/mysqld/mysqld.pid
+socket                  = /run/mysqld/mysqld.sock
+port                    = 3306
+basedir                 = /usr
+datadir                 = /var/lib/mysql
+tmpdir                  = /tmp
+lc-messages-dir         = /usr/share/mysql
+bind-address            = 0.0.0.0
+query_cache_size        = 16M
+log_error               = /var/log/mysql/error.log
+character-set-server    = utf8mb4
+collation-server        = utf8mb4_general_ci
+
+[embedded]
+
+[mariadb]
+
+
+# 1. The Network & Sockets
+#Just like the socket administration logic you implement when building a custom C++ HTTP web server, MariaDB needs to know exactly how to bind its listening sockets.
+#
+#port = 3306: This defines the exact TCP port the server will listen on. 3306 is the universal standard for MySQL/MariaDB traffic.
+#
+#bind-address = 0.0.0.0: This is the equivalent of binding a server to INADDR_ANY. It tells MariaDB to accept incoming connections from any IP address on the network, rather than strictly rejecting everything outside of 127.0.0.1 (localhost).
+#
+#socket = /run/mysqld/mysqld.sock: While the port handles network traffic from WordPress, this creates a Unix domain socket file. This is used for local, lightning-fast communication if you ever need to access the database directly from inside its own container using the terminal.
+#
+#2. The File System (The Most Important Link)
+#datadir = /var/lib/mysql: This is where MariaDB physically saves all the tables, rows, and database files on the hard drive. If you look back at your docker-compose.yml, you created a volume that maps to /var/lib/mysql. This line ensures the database engine is actually dropping its files directly into the permanent storage you set up.
+#
+#basedir = /usr: Tells the system where the actual MariaDB software executables are installed.
+#
+#tmpdir = /tmp: If WordPress asks the database to sort a massive amount of data that doesn't fit in RAM, MariaDB will use this folder to write temporary files to get the job done.
+#
+#3. The Process Management
+#[mysqld]: The brackets define a specific section. mysqld (with a 'd' at the end) stands for the MySQL Daemon—the actual background worker process. Everything under this applies to the running server.
+#
+#user = mysql: For strict security, the database will run under a limited, dedicated Linux user named "mysql" instead of running as the all-powerful root user.
+#
+#pid-file = /run/mysqld/mysqld.pid: When the process starts, it writes its Process ID (PID) into this file so the operating system can easily track it or kill it if necessary.
+#
+#4. Text and Language Formatting
+#character-set-server = utf8mb4 & collation-server = utf8mb4_general_ci: In the early days, MySQL's default utf8 was flawed and couldn't store certain characters (like emojis or complex characters). utf8mb4 guarantees true, universal Unicode support so your WordPress posts and comments will never corrupt or display weird question mark symbols when someone types an emoji.
+
+#Here is how the INI format works:
+#
+#It is strictly for settings: It doesn't compile code, run loops, or execute logic. It is simply a structured way to store preferences so a program can read them when it boots up.
+#
+#Sections: The words wrapped in brackets, like [mysqld] or [server], are headers. They act like chapters in a book, grouping specific settings together so the software knows exactly what a setting applies to.
+#
+#Key-Value Pairs: Everything underneath a header is written as a simple equation: key = value (e.g., port = 3306).
+#
+#Because it is so lightweight and easy for both humans and computers to read, the INI format has been the standard way to configure databases like MySQL and MariaDB for decades.
