@@ -5,10 +5,11 @@ services:
     container_name: nginx  
     build:
       context: ./nginx
+    restart: unless-stopped
     ports:
-      - "443:443"  
+      - "443:443"
     networks:
-      - inception_net  
+      - inception_net
     volumes:
       - wordpress:/var/www/html
 
@@ -16,6 +17,7 @@ services:
     container_name: wordpress  
     build:
       context: ./wordpress  
+    restart: unless-stopped
     env_file: .env
     networks:
       - inception_net
@@ -26,12 +28,26 @@ services:
     container_name: mariadb  
     build:
       context: ./mariadb  
+    restart: unless-stopped
     env_file: .env
     networks:
       - inception_net
     volumes:
       - mariadb:/var/lib/mysql
-
+  adminer:
+    container_name: adminer  
+    build:
+      context: ./adminer  
+    restart: unless-stopped
+    networks:
+      - inception_net
+  static_site:
+    container_name: static_site  
+    build:
+      context: ./static_site  
+    restart: unless-stopped
+    networks:
+      - inception_net
 networks:
   inception_net:
     driver: bridge
