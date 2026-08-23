@@ -26,4 +26,4 @@ Inception is a System Administration project that broadens system architecture k
 - [Docker Official Documentation](https://docs.docker.com/)
 - [Nginx Reverse Proxy Guide](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
 - [Debian Bullseye Packages](https://packages.debian.org/bullseye/)
-- **AI Usage:** AI was utilized as a peer-learning assistant to clarify Nginx configuration structures in Debian, debug PHP-FPM volume mounting issues, and explore secure network architectures. AI did not write the core infrastructure or final Dockerfiles independently.
+- **AI Usage:** AI was utilized as a peer-learning assistant to clarify Nginx configuration structures in Debian, debug PHP-FPM volume mounting issues, and explore secure network architectures.
