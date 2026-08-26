@@ -1,9 +1,10 @@
 NAME = Inception
 
-
 all: $(NAME)
 
 $(NAME):
+	mkdir -p /home/sjouan/data/wordpress
+	mkdir -p /home/sjouan/data/mariadb
 	docker-compose -f srcs/docker-compose.yml up -d --build
 
 clean:
@@ -12,6 +13,8 @@ clean:
 fclean: clean
 	docker-compose -f srcs/docker-compose.yml down -v
 	docker system prune -a --force
+	sudo rm -rf /home/sjouan/data/wordpress
+	sudo rm -rf /home/sjouan/data/mariadb
 
 re: fclean all
 
