@@ -32,5 +32,6 @@ if [ ! -f /var/www/html/wp-config.php ]; then
     chown -R www-data:www-data /var/www/html
 
 fi
+
 mkdir -p /run/php
 exec /usr/sbin/php-fpm7.4 -F

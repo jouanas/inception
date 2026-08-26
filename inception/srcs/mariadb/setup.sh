@@ -1,6 +1,6 @@
 #!/bin/bash
 
-service mariadb start
+service mariadb start #
 
 sleep 3
 
