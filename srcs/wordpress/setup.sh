@@ -1,6 +1,8 @@
 #!/bin/bash
 
-sleep 10
+until bash -c "echo > /dev/tcp/mariadb/3306" 2> /dev/null; do
+    sleep 2
+done
 
 if [ ! -f /var/www/html/wp-config.php ]; then
     
@@ -16,7 +18,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --dbname="${MYSQL_DATABASE}" \
         --dbuser="${MYSQL_USER}" \
         --dbpass="${MYSQL_PASSWORD}" \
-        --dbhost=mariadb \
+        --dbhost="mariadb:3306" \
         --allow-root
 
     wp core install \
