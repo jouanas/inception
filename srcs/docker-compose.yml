@@ -72,11 +72,11 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/sjouan/data/wordpress
+      device: /home/doffy/data/wordpress
 
   mariadb:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/sjouan/data/mariadb
+      device: /home/doffy/data/mariadb
