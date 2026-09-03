@@ -2,7 +2,7 @@ services:
   nginx:
     container_name: nginx  
     build:
-      context: ./nginx
+      context: ./requirements/nginx
     restart: unless-stopped
     ports:
       - "443:443"
@@ -10,39 +10,55 @@ services:
       - inception_net
     volumes:
       - wordpress:/var/www/html
+    depends_on:
+       wordpress:
+        condition: service_healthy
 
   wordpress:
     container_name: wordpress  
     build:
-      context: ./wordpress  
+      context: ./requirements/wordpress  
     restart: unless-stopped
     env_file: .env
     networks:
       - inception_net
     volumes:
       - wordpress:/var/www/html
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/9000' 2> /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mariadb:
     container_name: mariadb  
     build:
-      context: ./mariadb  
+      context: ./requirements/mariadb  
     restart: unless-stopped
     env_file: .env
     networks:
       - inception_net
     volumes:
       - mariadb:/var/lib/mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
   adminer:
     container_name: adminer  
     build:
-      context: ./adminer  
+      context: ./requirements/bonus/adminer  
     restart: unless-stopped
     networks:
       - inception_net
   static_site:
     container_name: static_site  
     build:
-      context: ./static_site  
+      context: ./requirements/bonus/static_site  
     restart: unless-stopped
     networks:
       - inception_net

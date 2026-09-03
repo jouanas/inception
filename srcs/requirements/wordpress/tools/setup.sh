@@ -1,7 +1,6 @@
 #!/bin/bash
-
 until bash -c "echo > /dev/tcp/mariadb/3306" 2> /dev/null; do
-    sleep 2
+    sleep 3
 done
 
 if [ ! -f /var/www/html/wp-config.php ]; then
