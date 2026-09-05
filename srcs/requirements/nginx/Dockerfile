@@ -1,9 +1,10 @@
-FROM debian:bullseye
+FROM debian:bookworm
 EXPOSE 443
 
 RUN apt-get update && apt-get install -y \
     nginx \
-    openssl
+    openssl\
+    procps
 
 RUN mkdir -p /etc/nginx/ssl
 

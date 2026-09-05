@@ -1,5 +1,8 @@
 #!/bin/bash
 
+mkdir -p /run/mysqld
+chown -R mysql:mysql /run/mysqld
+
 if [ ! -d "/var/lib/mysql/${MYSQL_DATABASE}" ]; then
     
     cat << EOF > /tmp/init.sql
@@ -12,7 +15,7 @@ EOF
 
     chmod 777 /tmp/init.sql
 
-    exec mysqld_safe --init-file=/tmp/init.sql
+    exec mysqld --user=mysql --init-file=/tmp/init.sql
 fi
 
-exec mysqld_safe
+exec mysqld --user=mysql
